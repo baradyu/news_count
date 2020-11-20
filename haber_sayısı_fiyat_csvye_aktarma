@@ -1,0 +1,66 @@
+def newscount_price():
+    #twitter counter
+    code = input('Enter stock code: ')
+    import pandas as pd
+    import datetime as dt
+    from datetime import date, timedelta
+    import pandas as pd
+    import pandas_datareader.data as web
+    import numpy as np
+
+    df = pd.read_csv("C:/Users/berat/Desktop/Ulakfin - Ortak Data/DATA_SON/sirket_haberleri.csv")  # kaynak csv
+
+    # Tarihleri liste yapmak
+    b = df['date_list']
+    dates = []
+    for i in b:
+        if i not in dates:
+            dates.append(i)
+    del dates[6]  # 30 ağustosu çıkartıyoruz
+    del dates[13] # ???????????????
+
+    # Seçilmiş şirketin haberlerinin her gün için sayısını liste haline getirmek
+    news_count = []
+    for date in dates:
+        dfi = df.loc[df['date_list'] == date]
+        count = len(dfi.loc[df['codes'] == code]['codes'])
+        news_count.append(count)
+    del news_count[
+        0]  # t zamanında çekilen haber aslında t-1 zamanının haberi olduğu için 'count' bir birim kaydırılıyor
+    del dates[-1]  # t zamanında çekilen haber aslında t-1 zamanının haberi olduğu için 'count' bir birim kaydırılıyor
+    # bu yüzden son günü siliyoruz
+
+    # Şirket İsmi
+    name = np.repeat(code, len(dates))
+    name = list(name)
+
+    # Seçilen Şirket için Fiyat datası
+    start = dt.datetime(2020, 8, 31)
+    end = dt.datetime.now() - timedelta(days=1)
+    df = web.DataReader(code + '.IS', 'yahoo', start, end)
+    df.reset_index(inplace=True)
+    df.set_index("Date", inplace=True)
+    price = df['Adj Close']
+    price = list(price)
+    del price[6]
+    
+    dates2 = []
+    for date in dates:
+        datetime_object = dt.datetime.strptime(date, '%m/%d/%Y')
+        dates2.append(datetime_object)
+    dates = dates2
+
+    # Dict
+    data = {'name': name,
+            'dates': dates,
+            'count': news_count,
+            'price': list(price)
+            }
+
+    # Son dataframe
+    df2 = pd.DataFrame(data, columns=['name', 'dates', 'count', 'price'])
+    df2.to_csv(f'C:/Users/berat/Desktop/Ulakfin - Ortak Data/StockData/{code}.csv') # Sirket haber sayisi ayrica kaydetmek için
+    df2.to_csv("C:\\Users\\berat\\Documents\\Ulakfin - Ortak Data\\abc.csv") # R'da bu dosyaya refer edilmesi gerekiyor
+    return df2
+
+newscount_price()
