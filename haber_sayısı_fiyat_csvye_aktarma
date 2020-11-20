@@ -6,9 +6,9 @@ def newscount_price():
     from datetime import date, timedelta
     import pandas as pd
     import pandas_datareader.data as web
-    import numpy as np
+    import numpy as np:
 
-    df = pd.read_csv("C:/Users/berat/Desktop/Ulakfin - Ortak Data/DATA_SON/sirket_haberleri.csv")  # kaynak csv
+    df = pd.read_csv("C:/Users/berat/Desktop/Ulakfin - Ortak Data/DATA_SON/sirket_haberleri.csv")  # kaynak csv: Günlük şirket haberlerini çektiğimiz ana dosya
 
     # Tarihleri liste yapmak
     b = df['date_list']
