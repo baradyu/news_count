@@ -1,0 +1,21 @@
+## Grafiği çalıştırmak için ggplot2 ve plotly paketlerinin yüklenmesi lazım
+#install.packages("ggplot2")
+#install.packages("plotly")
+
+
+library(ggplot2)
+library(plotly)
+
+df = read.csv("C:\\Users\\berat\\Documents\\Ulakfin - Ortak Data\\abc.csv") #haber sayısı-fiyat datası çekme kodundaki R'a refer edilmesi gereken csv dosyası
+
+df[,1] <- NULL
+
+dates = as.Date(df$dates, "%Y-%m-%d")
+
+df[,2] <- dates
+
+graph = ggplot(df,aes(x=dates, y=price, group = 1)) + geom_line() + 
+  geom_point(aes(size=count)) + theme_minimal() +
+  labs(title = df[1,1], x = "Date", y = "Price", size = "News Count")
+
+ggplotly(graph)
